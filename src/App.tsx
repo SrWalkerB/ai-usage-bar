@@ -4,7 +4,7 @@ import { type AppView, type ProviderId, api } from "./api";
 import { AddProviderView, ConnectView } from "./components/Connect";
 import { ProviderCard } from "./components/ProviderCard";
 import { SettingsView } from "./components/SettingsView";
-import { BackIcon, DotsIcon, GearIcon, PlusIcon, RefreshIcon, SparkleLogo } from "./components/icons";
+import { BackIcon, GearIcon, PlusIcon, RefreshIcon } from "./components/icons";
 import { formatAgo } from "./format";
 import { I18nContext, makeT, resolveLocale } from "./i18n";
 import "./App.css";
@@ -24,7 +24,6 @@ export default function App() {
   const [view, setView] = useState<AppView | null>(null);
   const [screen, setScreen] = useState<Screen>({ name: "home" });
   const [syncing, setSyncing] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   useTick(30_000);
 
@@ -34,11 +33,10 @@ export default function App() {
 
   useEffect(() => {
     api.getState().then(setView);
-    const unlisten = [
-      listen<AppView>("state-changed", (e) => setView(e.payload)),
-      listen("window-shown", () => setMenuOpen(false)),
-    ];
-    return () => unlisten.forEach((p) => p.then((f) => f()));
+    const unlisten = listen<AppView>("state-changed", (e) => setView(e.payload));
+    return () => {
+      unlisten.then((f) => f());
+    };
   }, []);
 
   // Size the native window to fit the panel. Also re-fit whenever the window is shown,
@@ -77,58 +75,65 @@ export default function App() {
     if (v) setView(v);
     setScreen({ name: "home" });
   };
+  const toggle = (name: "settings" | "add") =>
+    setScreen(screen.name === name ? { name: "home" } : name === "add" ? { name: "add" } : { name: "settings" });
 
-  const title =
-    screen.name === "settings"
-      ? t("settings")
-      : screen.name === "add" || screen.name === "connect"
-        ? t("addProvider")
-        : "AI Usage Monitor";
+  const subScreenTitle =
+    screen.name === "settings" ? t("settings") : screen.name === "home" ? null : t("addProvider");
 
   return (
     <I18nContext.Provider value={i18n}>
       <div className="panel" ref={panelRef}>
         <header className="top">
-          {screen.name === "home" ? (
-            <SparkleLogo />
+          {subScreenTitle ? (
+            <>
+              <button
+                className="icon-btn icon-btn--back"
+                aria-label={t("back")}
+                onClick={() => setScreen(screen.name === "connect" ? { name: "add" } : { name: "home" })}
+              >
+                <BackIcon size={20} />
+              </button>
+              <h1 className="top__title">{subScreenTitle}</h1>
+            </>
           ) : (
-            <button
-              className="icon-btn"
-              aria-label={t("back")}
-              onClick={() => setScreen(screen.name === "connect" ? { name: "add" } : { name: "home" })}
-            >
-              <BackIcon />
-            </button>
+            <div className="top__titles">
+              <h1 className="top__title">AI Usage</h1>
+              <p>{connected.length === 1 ? t("connectedOne") : t("connected", { n: connected.length })}</p>
+            </div>
           )}
-          <div className="top__titles">
-            <h1>{title}</h1>
-          </div>
-          {screen.name === "home" && connected.length > 0 && (
-            <span className="pill">
-              <span className="dot" />
-              {connected.length === 1 ? t("connectedOne") : t("connected", { n: connected.length })}
-            </span>
-          )}
+          <span className="spacer" />
+          <button
+            className={`icon-btn ${screen.name === "settings" ? "icon-btn--active" : ""}`}
+            aria-label={t("settings")}
+            onClick={() => toggle("settings")}
+          >
+            <GearIcon size={22} />
+          </button>
+          <button
+            className={`icon-btn ${screen.name === "add" || screen.name === "connect" ? "icon-btn--active" : ""}`}
+            aria-label={t("addProvider")}
+            onClick={() => toggle("add")}
+          >
+            <PlusIcon size={24} />
+          </button>
         </header>
 
         <main className="content">
           {screen.name === "home" && (
             <>
               {view && connected.length === 0 && (
-                <div className="empty">
+                <div className="card empty">
                   <strong>{t("emptyTitle")}</strong>
                   <span className="muted">{t("emptyHint")}</span>
+                  <button className="btn btn--primary" onClick={() => setScreen({ name: "add" })}>
+                    {t("addProvider")}
+                  </button>
                 </div>
               )}
               {connected.map((p) => (
                 <ProviderCard key={p.id} p={p} onReconnect={() => setScreen({ name: "connect", provider: p.id })} />
               ))}
-              {view && connected.length < view.providers.length && (
-                <button className="add" onClick={() => setScreen({ name: "add" })}>
-                  <PlusIcon size={22} />
-                  {t("addProvider")}
-                </button>
-              )}
             </>
           )}
 
@@ -144,54 +149,24 @@ export default function App() {
             />
           )}
 
-          {screen.name === "settings" && view && <SettingsView settings={view.settings} onChange={setView} />}
+          {screen.name === "settings" && view && <SettingsView view={view} onChange={setView} />}
         </main>
 
         <footer className="foot">
-          <button className="icon-btn" onClick={sync} disabled={syncing} aria-label="Refresh">
+          <button className="foot__sync" onClick={sync} disabled={syncing}>
             <span className={syncing ? "spin" : ""}>
-              <RefreshIcon size={20} />
+              <RefreshIcon size={22} />
             </span>
-          </button>
-          <span className="muted">
             {syncing
               ? t("syncing")
               : view?.lastSync
                 ? t("lastSync", { time: formatAgo(view.lastSync, locale) })
                 : t("notSynced")}
-          </span>
-          <span className="spacer" />
-          <button
-            className={`icon-btn ${screen.name === "settings" ? "icon-btn--active" : ""}`}
-            aria-label={t("settings")}
-            onClick={() => setScreen(screen.name === "settings" ? { name: "home" } : { name: "settings" })}
-          >
-            <GearIcon size={20} />
           </button>
-          <span className="sep" />
-          <div className="menu-wrap">
-            <button className="icon-btn" aria-label="Menu" onClick={() => setMenuOpen((o) => !o)}>
-              <DotsIcon size={20} />
-            </button>
-            {menuOpen && (
-              <div className="menu" onMouseLeave={() => setMenuOpen(false)}>
-                {connected.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={async () => {
-                      setMenuOpen(false);
-                      setView(await api.disconnect(p.id));
-                    }}
-                  >
-                    {t("disconnect", { name: p.name })}
-                  </button>
-                ))}
-                <button className="danger" onClick={() => api.quit()}>
-                  {t("quit")}
-                </button>
-              </div>
-            )}
-          </div>
+          <span className="spacer" />
+          <button className="foot__quit" onClick={() => api.quit()}>
+            {t("quit")}
+          </button>
         </footer>
       </div>
     </I18nContext.Provider>

@@ -1,34 +1,36 @@
 import type { ProviderView, UsageWindow } from "../api";
-import { formatExact, formatPlan, formatUntil } from "../format";
+import { formatDuration, formatExact } from "../format";
 import { type TKey, useI18n } from "../i18n";
-import { AlertIcon, CalendarIcon, ProviderIcon } from "./icons";
+import { ProviderIcon } from "./icons";
 
+// Bar colors per provider, in window order (shortest window first).
 const ACCENTS: Record<string, string[]> = {
-  codex: ["green", "blue", "teal"],
-  claude: ["purple", "blue", "teal"],
+  codex: ["blue", "purple", "teal"],
+  claude: ["green", "yellow", "teal"],
 };
 
-function ResetLabel({ w }: { w: UsageWindow }) {
+function WindowRow({ w, accent }: { w: UsageWindow; accent: string }) {
   const { t, locale } = useI18n();
-  if (!w.resetsAt) return null;
-  return (
-    <span className="reset" title={new Date(w.resetsAt).toLocaleString(locale)}>
-      <CalendarIcon />
-      {t("resets", { time: formatUntil(w.resetsAt, locale) })}
-      <span className="reset__exact">· {formatExact(w.resetsAt, locale)}</span>
-    </span>
-  );
-}
-
-function Bar({ w, accent }: { w: UsageWindow; accent: string }) {
   const pct = Math.min(100, Math.max(0, w.usedPercent));
-  const tone = pct >= 90 ? "danger" : pct >= 75 ? "warn" : accent;
+  const tone = pct >= 90 ? "danger" : accent;
   return (
-    <div className="bar-row">
-      <div className={`bar bar--${tone}`} role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}>
-        <div className="bar__fill" style={{ width: `${pct}%` }} />
+    <div className="window">
+      <span className="window__name">
+        {t(`window.${w.kind}` as TKey)}
+        {w.label && ` · ${w.label}`}
+      </span>
+      <div className="bar-row">
+        <div className={`bar bar--${tone}`} role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}>
+          <div className="bar__fill" style={{ width: `${pct}%` }} />
+        </div>
+        <span className="bar-pct">{Math.round(pct)}%</span>
       </div>
-      <span className="bar-pct">{Math.round(pct)}%</span>
+      {w.resetsAt && (
+        <span className="window__reset" title={new Date(w.resetsAt).toLocaleString(locale)}>
+          {t("resetsIn", { time: formatDuration(w.resetsAt - Date.now(), t) })}
+          <span className="window__exact"> · {formatExact(w.resetsAt, locale)}</span>
+        </span>
+      )}
     </div>
   );
 }
@@ -37,44 +39,37 @@ export function ProviderCard({ p, onReconnect }: { p: ProviderView; onReconnect:
   const { t } = useI18n();
   const windows = p.usage?.windows ?? [];
   const accents = ACCENTS[p.id];
-  const windowName = (w: UsageWindow) => t(`window.${w.kind}` as TKey) + (w.label ? ` · ${w.label}` : "");
-  const plan = formatPlan(p.id, p.usage?.plan);
+  const status = p.error?.kind === "auth" ? "expired" : p.error ? "error" : "active";
 
   return (
     <section className="card">
-      <ProviderIcon id={p.id} />
-      <div className="card__body">
-        <header className="card__head">
-          <h2>{p.name}</h2>
-          {plan && <span className="chip">{plan}</span>}
-          {p.source === "cli" && <span className="chip chip--muted">{t("viaCli")}</span>}
-        </header>
+      <header className="card__head">
+        <ProviderIcon id={p.id} />
+        <h2>{p.name}</h2>
+        <span className="spacer" />
+        <span className={`status status--${status}`} title={p.error?.message}>
+          <span className="status__dot" />
+          {t(`status.${status}` as TKey)}
+        </span>
+      </header>
 
-        {windows.map((w, i) => (
-          <div className="window" key={`${w.kind}-${w.label ?? ""}`}>
-            <div className="window__head">
-              <span>{windowName(w)}</span>
-              <ResetLabel w={w} />
-            </div>
-            <Bar w={w} accent={accents[Math.min(i, accents.length - 1)]} />
-          </div>
-        ))}
+      {windows.map((w, i) => (
+        <WindowRow key={`${w.kind}-${w.label ?? ""}`} w={w} accent={accents[Math.min(i, accents.length - 1)]} />
+      ))}
 
-        {p.usage && windows.length === 0 && <p className="muted small">{t("noLimits")}</p>}
-        {!p.usage && !p.error && <div className="skeleton" />}
+      {p.usage && windows.length === 0 && <p className="muted small">{t("noLimits")}</p>}
+      {!p.usage && !p.error && <div className="skeleton" />}
 
-        {p.error && (
-          <div className={`notice notice--${p.error.kind}`} title={p.error.message}>
-            <AlertIcon />
-            <span>{p.error.kind === "auth" ? t("authError") : t("fetchError")}</span>
-            {p.error.kind === "auth" && (
-              <button className="link" onClick={onReconnect}>
-                {t("reconnect")}
-              </button>
-            )}
-          </div>
-        )}
-      </div>
+      {p.error && (
+        <div className={`notice notice--${p.error.kind}`}>
+          <span>{p.error.kind === "auth" ? t("authError") : t("fetchError")}</span>
+          {p.error.kind === "auth" && (
+            <button className="link" onClick={onReconnect}>
+              {t("reconnect")}
+            </button>
+          )}
+        </div>
+      )}
     </section>
   );
 }

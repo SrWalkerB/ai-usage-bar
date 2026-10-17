@@ -1,14 +1,16 @@
+import type { T } from "./i18n";
+
 const MIN = 60_000;
 const HOUR = 60 * MIN;
 const DAY = 24 * HOUR;
 
-/** "in 5 days" / "em 5 dias" — picks a unit that stays meaningful for long windows. */
-export function formatUntil(ts: number, locale: string, now = Date.now()): string {
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "always" });
-  const diff = Math.max(0, ts - now);
-  if (diff < HOUR) return rtf.format(Math.max(1, Math.round(diff / MIN)), "minute");
-  if (diff < 48 * HOUR) return rtf.format(Math.round(diff / HOUR), "hour");
-  return rtf.format(Math.round(diff / DAY), "day");
+/** Compact duration: "35 min", "7h", "4 dias". */
+export function formatDuration(ms: number, t: T): string {
+  const diff = Math.max(0, ms);
+  if (diff < HOUR) return t("durMin", { n: Math.max(1, Math.round(diff / MIN)) });
+  if (diff < 48 * HOUR) return t("durHour", { n: Math.round(diff / HOUR) });
+  const days = Math.round(diff / DAY);
+  return days === 1 ? t("durDayOne") : t("durDay", { n: days });
 }
 
 /** "2 min ago" / "há 2 min" */

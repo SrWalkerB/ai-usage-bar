@@ -5,7 +5,7 @@
   "identifier": "dev.walker.aiusage",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "devUrl": "http://localhost:1420",
+    "devUrl": "http://localhost:1430",
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
@@ -14,7 +14,7 @@
       {
         "label": "main",
         "title": "AI Usage Monitor",
-        "width": 420,
+        "width": 340,
         "height": 360,
         "visible": false,
         "decorations": false,
@@ -29,9 +29,18 @@
       "csp": null
     }
   },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFBNkRDQkM0MEQwOTJBQTYKUldTbUtna054TXR0cXRrMzFwdGF4cTZOYm1hdG1aZ0czQ2lxdU4yaHAvZnNQSGZ6YThqVEFmUHMK",
+      "endpoints": [
+        "https://github.com/SrWalkerB/ai-usage-bar/releases/latest/download/latest.json"
+      ]
+    }
+  },
   "bundle": {
     "active": true,
     "targets": ["nsis", "msi"],
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

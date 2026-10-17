@@ -3,19 +3,6 @@ import type { ProviderId } from "../api";
 type P = { size?: number };
 const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
-export const SparkleLogo = ({ size = 36 }: P) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden>
-    <defs>
-      <linearGradient id="spk" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor="#a78bfa" />
-        <stop offset="1" stopColor="#4f7cff" />
-      </linearGradient>
-    </defs>
-    <path d="M16 2.5c.9 6.6 4.9 10.6 11.5 11.5-6.6.9-10.6 4.9-11.5 11.5C15.1 18.9 11.1 14.9 4.5 14 11.1 13.1 15.1 9.1 16 2.5Z" fill="url(#spk)" transform="rotate(12 16 16)" />
-    <circle cx="25.5" cy="25" r="2.2" fill="#7c8cff" />
-  </svg>
-);
-
 export const RefreshIcon = ({ size = 18 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" {...stroke}>
     <path d="M20 11a8 8 0 0 0-14.3-4.9L4 8" />
@@ -32,21 +19,6 @@ export const GearIcon = ({ size = 18 }: P) => (
   </svg>
 );
 
-export const DotsIcon = ({ size = 18 }: P) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="5" r="1.8" />
-    <circle cx="12" cy="12" r="1.8" />
-    <circle cx="12" cy="19" r="1.8" />
-  </svg>
-);
-
-export const CalendarIcon = ({ size = 15 }: P) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" {...stroke}>
-    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
-    <path d="M3.5 10h17M8 3v4M16 3v4" />
-  </svg>
-);
-
 export const PlusIcon = ({ size = 18 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" {...stroke}>
     <path d="M12 5v14M5 12h14" />
@@ -59,13 +31,6 @@ export const BackIcon = ({ size = 18 }: P) => (
   </svg>
 );
 
-export const AlertIcon = ({ size = 15 }: P) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" {...stroke}>
-    <path d="M12 3 2.5 20h19L12 3Z" />
-    <path d="M12 10v4M12 17.2v.1" />
-  </svg>
-);
-
 // OpenAI mark (simple-icons).
 const CodexGlyph = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -74,7 +39,7 @@ const CodexGlyph = () => (
 );
 
 const ClaudeGlyph = () => (
-  <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden>
+  <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden>
     <g stroke="#e8774f" strokeWidth="2.1" strokeLinecap="round">
       {Array.from({ length: 12 }, (_, i) => {
         const a = (i * Math.PI) / 6;
