@@ -1,11 +1,9 @@
 # AI Usage Monitor
 
-A small Windows tray app that shows how much of your **Codex** (ChatGPT) and **Claude** plan limits you have used — session and weekly bars, time until reset, and automatic refresh. No more opening a CLI or a web page just to check if you are close to the limit.
+A small Windows tray app that shows how much of your **Codex** (ChatGPT), **Claude** and **OpenCode Go** plan limits you have used — session and weekly bars, time until reset, and automatic refresh. No more opening a CLI or a web page just to check if you are close to the limit.
 
 <p align="center">
-  <img src="docs/screenshots/home-light.png" alt="AI Usage Monitor — light theme" width="300">
-  &nbsp;&nbsp;
-  <img src="docs/screenshots/home-dark.png" alt="AI Usage Monitor — dark theme" width="300">
+  <img src="docs/screenshots/home-dark.png" alt="AI Usage Monitor — Codex, Claude and OpenCode Go" width="300">
 </p>
 
 ## Features
@@ -29,16 +27,9 @@ Download the latest installer (`.exe` or `.msi`) from the [Releases page](https:
 ## Getting started
 
 1. Click the tray icon to open the panel.
-2. Press **+** (Add provider) and pick Codex or Claude.
+2. Press **+** (Add provider) and pick Codex, Claude or OpenCode Go.
 3. Follow the sign-in steps below. Usage appears right after the first sync.
 
-<p align="center">
-  <img src="docs/screenshots/empty.png" alt="Empty state" width="240">
-  &nbsp;&nbsp;
-  <img src="docs/screenshots/add-provider.png" alt="Add provider" width="240">
-  &nbsp;&nbsp;
-  <img src="docs/screenshots/settings.png" alt="Settings" width="240">
-</p>
 
 ### Connecting
 
