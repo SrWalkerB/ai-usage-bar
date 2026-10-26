@@ -1,7 +1,7 @@
 mod providers;
 mod store;
 
-use providers::{FetchError, Usage, claude, codex, now_ms};
+use providers::{FetchError, Usage, claude, codex, now_ms, opencode_go};
 use serde::Serialize;
 use std::{
     collections::BTreeMap,
@@ -19,7 +19,7 @@ use tauri::{
 };
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
 
-const WINDOW_WIDTH: f64 = 340.0;
+const WINDOW_WIDTH: f64 = 300.0;
 const TRAY_ID: &str = "main";
 
 #[derive(Serialize, Clone)]
@@ -91,6 +91,7 @@ fn build_view(state: &AppState) -> AppView {
                 cli_available: match id {
                     ProviderId::Codex => codex::cli_available(),
                     ProviderId::Claude => claude::cli_available(),
+                    ProviderId::OpenCodeGo => opencode_go::cli_available(),
                 },
                 usage: result.usage,
                 error: result.error,
@@ -139,6 +140,7 @@ async fn refresh_all(app: &AppHandle) -> AppView {
         let r = match id {
             ProviderId::Codex => codex::fetch(http, cred).await,
             ProviderId::Claude => claude::fetch(http, cred).await,
+            ProviderId::OpenCodeGo => opencode_go::fetch(http, cred).await,
         };
         (*id, r)
     }))
@@ -251,6 +253,7 @@ async fn import_cli(app: AppHandle, provider: ProviderId) -> Result<AppView, Str
     let available = match provider {
         ProviderId::Codex => codex::cli_available(),
         ProviderId::Claude => claude::cli_available(),
+        ProviderId::OpenCodeGo => opencode_go::cli_available(),
     };
     if !available {
         return Err("cli-not-found".into());

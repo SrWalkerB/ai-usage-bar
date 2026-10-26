@@ -53,6 +53,25 @@ const ClaudeGlyph = () => (
   </svg>
 );
 
-export const ProviderIcon = ({ id }: { id: ProviderId }) => (
-  <div className={`provider-icon provider-icon--${id}`}>{id === "codex" ? <CodexGlyph /> : <ClaudeGlyph />}</div>
+// OpenCode-style terminal block: a square frame with a filled inner square.
+const OpenCodeGlyph = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <rect x="4" y="2" width="16" height="20" stroke="currentColor" strokeWidth="2.4" />
+    <rect x="8" y="10" width="8" height="8" fill="currentColor" opacity="0.55" />
+  </svg>
 );
+
+const GLYPHS: Record<ProviderId, () => React.ReactElement> = {
+  codex: CodexGlyph,
+  claude: ClaudeGlyph,
+  opencodego: OpenCodeGlyph,
+};
+
+export const ProviderIcon = ({ id }: { id: ProviderId }) => {
+  const Glyph = GLYPHS[id];
+  return (
+    <div className={`provider-icon provider-icon--${id}`}>
+      <Glyph />
+    </div>
+  );
+};

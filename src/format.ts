@@ -46,6 +46,7 @@ const PLAN_NAMES: Record<string, Record<string, string>> = {
     edu: "Edu",
   },
   claude: { free: "Free", pro: "Pro", max: "Max", team: "Team", enterprise: "Enterprise" },
+  opencodego: { go: "Go" },
 };
 
 export function formatPlan(provider: string, plan: string | null | undefined): string | null {

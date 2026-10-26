@@ -8,7 +8,12 @@ type Props = { provider: ProviderView; onDone: (view: AppView) => void };
 
 const errText = (e: unknown) => (typeof e === "string" ? e : e instanceof Error ? e.message : JSON.stringify(e));
 
-function CliImport({ provider, onDone, setError }: Props & { setError: (s: string | null) => void }) {
+function CliImport({
+  provider,
+  onDone,
+  setError,
+  alone,
+}: Props & { setError: (s: string | null) => void; alone?: boolean }) {
   const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   if (!provider.cliAvailable) return null;
@@ -27,12 +32,16 @@ function CliImport({ provider, onDone, setError }: Props & { setError: (s: strin
   return (
     <>
       <button className="btn btn--secondary" disabled={busy} onClick={run}>
-        {provider.id === "codex" ? t("importCodex") : t("importClaude")}
+        {provider.id === "codex" ? t("importCodex") : provider.id === "opencodego" ? t("importOpenCodeGo") : t("importClaude")}
       </button>
-      <p className="muted small center">{t("importHint")}</p>
-      <div className="divider">
-        <span>{t("or")}</span>
-      </div>
+      {!alone && (
+        <>
+          <p className="muted small center">{t("importHint")}</p>
+          <div className="divider">
+            <span>{t("or")}</span>
+          </div>
+        </>
+      )}
     </>
   );
 }
@@ -170,14 +179,33 @@ function ClaudeConnect({ provider, onDone }: Props) {
   );
 }
 
+function OpenCodeGoConnect({ provider, onDone }: Props) {
+  const { t } = useI18n();
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <div className="connect">
+      <p className="muted">{t("opencodeGoIntro")}</p>
+      {provider.cliAvailable ? (
+        <CliImport provider={provider} onDone={onDone} setError={setError} alone />
+      ) : (
+        <p className="error">{t("cliNotFound")}</p>
+      )}
+      {error && <p className="error">{error}</p>}
+    </div>
+  );
+}
+
+const CONNECTORS = { codex: CodexConnect, claude: ClaudeConnect, opencodego: OpenCodeGoConnect };
+
 export function ConnectView(props: Props) {
+  const Connector = CONNECTORS[props.provider.id];
   return (
     <div className="view">
       <div className="connect-head">
         <ProviderIcon id={props.provider.id} />
         <h2>{props.provider.name}</h2>
       </div>
-      {props.provider.id === "codex" ? <CodexConnect {...props} /> : <ClaudeConnect {...props} />}
+      <Connector {...props} />
     </div>
   );
 }

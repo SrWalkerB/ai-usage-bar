@@ -124,10 +124,10 @@ p {
   border-radius: 12px;
   border: 1px solid var(--panel-edge);
   background: var(--panel);
-  padding: 10px 10px 8px;
+  padding: 8px 8px 6px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 /* ---------- header ---------- */
@@ -136,12 +136,12 @@ p {
   align-items: center;
   gap: 4px;
   padding: 0 4px 0 6px;
-  min-height: 38px;
+  min-height: 32px;
 }
 
 .top__title {
   font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--text-2);
@@ -156,9 +156,9 @@ p {
 .icon-btn {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   color: var(--icon);
   transition: background 0.15s;
 }
@@ -176,33 +176,33 @@ p {
 .content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .card {
   background: var(--card);
   border-radius: 12px;
-  padding: 10px 12px 6px;
+  padding: 7px 10px 3px;
   box-shadow: 0 1px 2px var(--card-shadow);
 }
 
 .card__head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
+  gap: 8px;
+  margin-bottom: 0;
 }
 
 .card__head h2 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-2);
 }
 
 .provider-icon {
   flex: none;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
   display: grid;
   place-items: center;
@@ -214,22 +214,27 @@ p {
 }
 
 .provider-icon--codex svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
+}
+
+.provider-icon--opencodego {
+  background: #211e1e;
+  color: #f1ecec;
 }
 
 .provider-icon--claude svg {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
 }
 
 .status {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   background: var(--ok-bg);
   color: var(--status-text);
 }
@@ -260,8 +265,8 @@ p {
 .window {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 7px 0 8px;
+  gap: 2px;
+  padding: 5px 0 5px;
 }
 
 .window + .window {
@@ -269,19 +274,19 @@ p {
 }
 
 .window__name {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-2);
 }
 
 .bar-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .bar {
   flex: 1;
-  height: 10px;
+  height: 8px;
   border-radius: 999px;
   background: var(--track);
   overflow: hidden;
@@ -304,13 +309,13 @@ p {
   min-width: 38px;
   text-align: right;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-2);
   font-variant-numeric: tabular-nums;
 }
 
 .window__reset {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--muted);
 }
 

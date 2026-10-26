@@ -1,5 +1,6 @@
 pub mod claude;
 pub mod codex;
+pub mod opencode_go;
 
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
 use rand::RngCore;

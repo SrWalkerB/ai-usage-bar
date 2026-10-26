@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 
-export type ProviderId = "codex" | "claude";
+export type ProviderId = "codex" | "claude" | "opencodego";
 export type WindowKind = "session" | "daily" | "weekly" | "monthly" | "other";
 
 export interface UsageWindow {

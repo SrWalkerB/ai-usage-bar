@@ -8,15 +8,18 @@ use std::{collections::BTreeMap, fs, path::PathBuf};
 pub enum ProviderId {
     Codex,
     Claude,
+    #[serde(rename = "opencodego")]
+    OpenCodeGo,
 }
 
 impl ProviderId {
-    pub const ALL: [ProviderId; 2] = [ProviderId::Codex, ProviderId::Claude];
+    pub const ALL: [ProviderId; 3] = [ProviderId::Codex, ProviderId::Claude, ProviderId::OpenCodeGo];
 
     pub fn display_name(self) -> &'static str {
         match self {
             ProviderId::Codex => "Codex",
             ProviderId::Claude => "Claude",
+            ProviderId::OpenCodeGo => "OpenCode Go",
         }
     }
 }

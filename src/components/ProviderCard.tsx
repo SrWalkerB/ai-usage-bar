@@ -7,6 +7,7 @@ import { ProviderIcon } from "./icons";
 const ACCENTS: Record<string, string[]> = {
   codex: ["blue", "purple", "teal"],
   claude: ["green", "yellow", "teal"],
+  opencodego: ["blue", "green", "purple"],
 };
 
 function WindowRow({ w, accent }: { w: UsageWindow; accent: string }) {

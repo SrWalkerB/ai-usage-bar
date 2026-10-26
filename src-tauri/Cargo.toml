@@ -1,6 +1,6 @@
 [package]
 name = "ai-usage"
-version = "0.1.1"
+version = "0.2.0"
 description = "AI Usage Monitor"
 authors = ["Brendo Walker"]
 edition = "2024"
@@ -30,6 +30,7 @@ base64 = "0.22"
 rand = "0.8"
 chrono = "0.4"
 dirs = "6"
+rusqlite = { version = "0.32", features = ["bundled"] }
 
 [profile.release]
 codegen-units = 1
